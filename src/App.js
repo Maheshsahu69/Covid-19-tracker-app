@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 
 const url="https://api.covid19api.com";
-let test=0;
 class App extends React.Component{
 constructor(props){
 super(props);
@@ -13,16 +12,63 @@ this.state={
   NewlyDeath:'',
   TotalRecovered:'',
   NewRecovered:'',
-   Countries:[]
+   Countries:[],
+   selectedCountry:''
 }
 
 this.getCountry=this.getCountry.bind(this);
 this.getSummary=this.getSummary.bind(this);
+this.getCountryOnChangeOfDropdown=this.getCountryOnChangeOfDropdown.bind(this);
 }
 
 componentDidMount(){
   this.getCountry();
-  this.getSummary();
+ this.getSummary();
+}
+getCountryOnChangeOfDropdown(){
+
+  if(this.state.selectedCountry===""){
+    this.getSummary();
+  }
+  else{
+  let countryName='';
+  let totalConfirmed=0;
+  let totalDeath=0;
+  let totalRecovered=0;
+  let newConfirmed=0;
+  let newDeaths=0;
+  let newRecovered=0;
+  fetch(url + '/summary').then((d)=>{
+     return d.json(); 
+  }).then(data=>{
+     let tempFilteredArray=[];
+     tempFilteredArray=data.Countries.filter((item)=>{
+      return item.Country===this.state.selectedCountry ; 
+    });
+    tempFilteredArray.map(item=>{
+      return (
+                countryName=item.Country,
+                totalConfirmed= item.TotalConfirmed,
+                totalDeath=item.TotalDeaths,
+                totalRecovered=item.TotalRecovered,
+                newConfirmed=item.NewConfirmed,
+                newDeaths=item.NewDeaths,
+                newRecovered=item.NewRecovered
+      )
+    });
+
+    this.setState({
+      TotalConfirmed: totalConfirmed,
+      NewlyConfirmed:newConfirmed,
+      TotalDeath:totalDeath,
+      NewlyDeath:newDeaths,
+      TotalRecovered:totalRecovered,
+      NewRecovered:newRecovered
+    });
+
+    console.log(totalRecovered,totalConfirmed,totalDeath,newConfirmed, newDeaths, newRecovered,countryName);
+  }).catch(errorOnGetCountryOnchange=>{console.log(errorOnGetCountryOnchange);});
+}
 }
 getCountry(){
   let tempArray=[];
@@ -70,6 +116,15 @@ getSummary(){
     console.log( "errorOnSummary :", errorOnSummary);
   });
 }
+
+selectedCountryName(event){
+  var selectElement = event.target;
+  var value = selectElement.value;
+  alert(value);
+  this.setState({
+      selectedCountry:event.target.value
+  });
+}
   render(){
     const {Countries}=this.state;
       let countryList = Countries.length > 0 && Countries.map((item,i)=>{
@@ -97,11 +152,9 @@ getSummary(){
             <div className="drop-down-box-div">
               <br/>
               <br/>
-            {/* <label>Choose a Country:</label>  */}
-                    <select id="country">
+                    <select id="country" onChange={(e)=> {this.setState({ selectedCountry: e.target.value});}} onClick={this.getCountryOnChangeOfDropdown}>
                           {countryList}
                     </select>
-  
             </div>
           </div>
         </div>
