@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 const url="https://api.covid19api.com";
+let test=0;
 class App extends React.Component{
 constructor(props){
 super(props);
