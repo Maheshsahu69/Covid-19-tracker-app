@@ -1,38 +1,156 @@
-.App {
+.title{
+  font-family:archia;
+  color: #343a40;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.data-confirmed{
+  /* padding-left:10px; */
+  color:rgb(255, 7, 58);
+  font-size:20px;
+  font-weight:600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.data-death{
+  padding-left:20px;
+  color:#007bff;
+  font-size:20px;
+  font-weight:600;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.data-recovered{
+  padding-left:20px;
+  color:#28a745;
+  font-size:20px;
+  font-weight:600;
+}
+.container{
+  height: 100%;
+  width: auto;
+  
+}
+.total-confirmed-div {
+  font-family:archia;
+  color:rgba(255, 7, 58, 0.6);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color:rgba(255, 7, 58, 0.125);
+  border-radius: 10px;
+  max-width: 100px;
+  padding: 25px;
+  padding-top: 5px;
+  
+}
+.newly-confirmed-div{
+  font-family:archia;
+  color:rgba(255, 7, 58, 0.6);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color:rgba(255, 7, 58, 0.125);
+  border-radius: 10px;
+  max-width: 100px;
+  padding: 25px;
+  margin-left : 10px;
+  padding-top: 5px;
+
+}
+
+.div1{
+  display:flex;
+  justify-content:center;
+  padding-top: 10px;
+}
+.div2{
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content:center;
+  padding-top: 10px;
+}
+.div3{
+  display: flex;
+  justify-content:center;
+  padding-top: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+.total-death-div{
+  font-family:archia;
+  color:rgba(0,123,255,.6);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color: rgba(54, 144, 240, 0.295);
+  border-radius: 10px;
+  max-width: 100px;
+  padding: 30px;
+  padding-top: 5px;
+
+}
+.newly-death-div{
+  font-family:archia;
+  color:rgba(0,123,255,.6);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color: rgba(54, 144, 240, 0.295);
+  border-radius: 10px;
+  max-width: 100px;
+  margin-left : 10px;
+  padding: 30px;
+  padding-top: 5px;
+
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.total-recovered-div{
+  font-family:archia;
+  color:rgba(40,167,69,.6)  ;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color:rgba(148, 223, 165, 0.6) ;
+  border-radius: 10px;
+  max-width: 100px;
+  padding: 25px;
+  padding-top: 5px;
+
+}
+.newly-recovered-div{
+  font-family:archia;
+  color:rgba(40,167,69,.6)  ;
+  background-color:rgba(148, 223, 165, 0.6) ;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  border-radius: 10px;
+  max-width: 100px;
+  margin-left : 10px;
+  padding: 25px;
+  padding-top: 5px;
+
+
+}
+
+.drop-down-box-div{
+  /* font-family:archia;
+  color:rgba(40,167,69,.6)  ;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase; */
+  /* display:inline-block; */
+  text-align: center;
+
+
+  
+}
+
+select {
+  width: 300px;
+  margin: 10px;
+  border-color: rgba(40,167,69,.6);
+
+}
+select:focus {
+  min-width: 300px;
+  width: auto;
 }
