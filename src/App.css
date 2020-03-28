@@ -4,20 +4,17 @@
   text-align: center;
   font-size:25px;
 }
-
 .data-confirmed{
   color:rgb(255, 7, 58);
   font-size:20px;
   font-weight:600;
 }
-
 .data-death{
   padding-left:20px;
   color:#007bff;
   font-size:20px;
   font-weight:600;
 }
-
 .data-recovered{
   padding-left:20px;
   color:#28a745;
@@ -26,8 +23,7 @@
 }
 .container{
   height: 100%;
-  width: auto;
-  
+  width: auto; 
 }
 .total-confirmed-div {
   font-family:archia;
@@ -40,7 +36,6 @@
   max-width: 100px;
   padding: 25px;
   padding-top: 5px;
-  
 }
 .newly-confirmed-div{
   font-family:archia;
@@ -54,9 +49,7 @@
   padding: 25px;
   margin-left : 10px;
   padding-top: 5px;
-
 }
-
 .div1{
   display:flex;
   justify-content:center;
@@ -72,7 +65,6 @@
   justify-content:center;
   padding-top: 10px;
 }
-
 .total-death-div{
   font-family:archia;
   color:rgba(0,123,255,.6);
@@ -84,7 +76,6 @@
   max-width: 100px;
   padding: 30px;
   padding-top: 5px;
-
 }
 .newly-death-div{
   font-family:archia;
@@ -98,10 +89,7 @@
   margin-left : 10px;
   padding: 30px;
   padding-top: 5px;
-
-
 }
-
 .total-recovered-div{
   font-family:archia;
   color:rgba(40,167,69,.6)  ;
@@ -113,7 +101,6 @@
   max-width: 100px;
   padding: 25px;
   padding-top: 5px;
-
 }
 .newly-recovered-div{
   font-family:archia;
@@ -127,28 +114,14 @@
   margin-left : 10px;
   padding: 25px;
   padding-top: 5px;
-
-
 }
-
 .drop-down-box-div{
-  /* font-family:archia;
-  color:rgba(40,167,69,.6)  ;
-  font-size: 12px;
-  font-weight: 900;
-  text-transform: uppercase; */
-  /* display:inline-block; */
-  text-align: center;
-
-
-  
+  text-align: center;  
 }
-
 select {
   width: 300px;
   margin: 10px;
   border-color: rgba(40,167,69,.6);
-
 }
 select:focus {
   min-width: 300px;
