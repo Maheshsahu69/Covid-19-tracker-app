@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
+import Chart from "chart.js";
+
 const url = "https://api.covid19api.com";
 class App extends React.Component {
+  chartRef = React.createRef();
   constructor(props) {
     super(props);
     this.state = {
@@ -12,54 +15,141 @@ class App extends React.Component {
       TotalRecovered: '',
       NewRecovered: '',
       Countries: [],
-      selectedCountry: ''
+      selectedCountry: '',
+      updatedTime: '',
+      CountryName: '',
     }
-     this.getCountryOnChangeOfDropdown = this.getCountryOnChangeOfDropdown.bind(this);
   }
   componentDidMount() {
     this.getCountry();
     this.getSummary();
+    this.getLastUpdatedTime();
   }
-  getCountryOnChangeOfDropdown=(e)=> {
+  getLastUpdatedTime = () => {
+    let url = `https://api.covid19api.com/dayone/country/india/status/confirmed/live`;
+    fetch(url).then((response) => {
+      return response.json();
+    }).then((data) => {
+      // get data updated time and date 
+      let a, b, d;
+      let arrayLength = data.length - 1;
+      a = data[arrayLength].Date;
+      b = a.split('T');
+      d = b[0].split('-');
+      let dateFormated = d[1] + ":" + d[2] + ":" + d[0];
+      let e = b[1].substring(0, b[1].length - 1);
+      let time = e;
+      this.setState({ updatedTime: dateFormated + "," + time });
+    }).catch((errorLastUpdatedTime) => { console.log("errorLastUpdatedTime", errorLastUpdatedTime); });
+  }
+  generateGraphOnSelectedCountry = () => {
+     if (this.state.selectedCountry !== '') {
+       let space=this.state.selectedCountry;
+      let comma= space.replace(/ /g,"-");
+      let trimmedCountry= comma.replace(/,/g,'');
+      let url = `https://api.covid19api.com/dayone/country/${trimmedCountry}/status/confirmed/live`;
+      fetch(url).then((response) => {
+        return response.json();
+      }).then((dataGraph) => {
+            this.getGraph(dataGraph);   
+        
+      }).catch((errorLiveDataCountryWise) => { console.log("errorLiveDataCountryWise", errorLiveDataCountryWise); });
+     }
+
+  }
+  getGraph=(dataGraph)=>{
+    let tempArrayDate = [];
+    tempArrayDate = dataGraph.map((item) => {
+      let a = item.Date
+      let b = a.split('T');
+      let d = b[0].split('-');
+      let dateFormated = d[1] + "-" + d[2]; //+ ":" + d[0];
+      return dateFormated;
+    });
+        //graph code
+        const myChartRef = this.chartRef.current.getContext("2d");
+        Chart.defaults.global.defaultFontFamily = ' "Lucida Grande", "Lucida Sans Unicode", "Arial", "Helvetica", "sans-serif" ';
+        Chart.defaults.global.defaultFontSize = 10;
+        Chart.defaults.global.defaultFontColor = '#777';
+        new Chart(myChartRef, {
+          type: "line",
+          data: {
+            //Bring in data
+            labels: tempArrayDate.map((item) => { return item }),
+            datasets: [
+              {
+                label: "Total Cases",
+                data: dataGraph.map((item) => { return item.Cases }),
+                fill: false,
+                backgroundColor: '#40E0D0',
+                borderColor: '#40E0D0',
+              },
+            ]
+          },
+          options: {
+            //Customize chart options
+            responsive: true, 
+            title: {
+              display: true,
+              text: "Total Confirmed Cases in : " + (this.state.CountryName === '' ? 'All Country' : this.state.CountryName)
+            },
+            maintainAspectRatio: false,
+             scales: {
+              yAxes: [{
+                  ticks: {
+                    beginAtZero:true
+                  }
+              }]
+            }
+          }
+        });
+  }
+  getCountryOnChangeOfDropdown = (e) => {
     //setting selectedCountry value on select of drownbox
-    { this.setState({ selectedCountry: e.target.value }); }
-      let countryName = '';
-      let totalConfirmed = 0;
-      let totalDeath = 0;
-      let totalRecovered = 0;
-      let newConfirmed = 0;
-      let newDeaths = 0;
-      let newRecovered = 0;
-      fetch(url + '/summary').then((d) => {
-        return d.json();
-      }).then(data => {
-        let tempFilteredArray = [];
-        tempFilteredArray = data.Countries.filter((item) => {
-          return item.Country === this.state.selectedCountry;
-        });
-        tempFilteredArray.map(item => {
-          return (
-            countryName = item.Country,
-            totalConfirmed = item.TotalConfirmed,
-            totalDeath = item.TotalDeaths,
-            totalRecovered = item.TotalRecovered,
-            newConfirmed = item.NewConfirmed,
-            newDeaths = item.NewDeaths,
-            newRecovered = item.NewRecovered
-          )
-        });
-        this.setState({
-          TotalConfirmed: totalConfirmed,
-          NewlyConfirmed: newConfirmed,
-          TotalDeath: totalDeath,
-          NewlyDeath: newDeaths,
-          TotalRecovered: totalRecovered,
-          NewRecovered: newRecovered
-        });
-        console.log(totalRecovered, totalConfirmed, totalDeath, newConfirmed, newDeaths, newRecovered, countryName);
-      }).catch(errorOnGetCountryOnchange => { console.log(errorOnGetCountryOnchange); });
+    this.setState({ selectedCountry: e.target.value });
+    let countryName = '';
+    let totalConfirmed = 0;
+    let totalDeath = 0;
+    let totalRecovered = 0;
+    let newConfirmed = 0;
+    let newDeaths = 0;
+    let newRecovered = 0;
+    fetch(url + '/summary').then((d) => {
+      return d.json();
+    }).then(data => {
+      let tempFilteredArray = [];
+      tempFilteredArray = data.Countries.filter((item) => {
+        return item.Country === this.state.selectedCountry;
+      });
+      tempFilteredArray.map(item => {
+        return (
+          countryName = item.Country,
+          totalConfirmed = item.TotalConfirmed,
+          totalDeath = item.TotalDeaths,
+          totalRecovered = item.TotalRecovered,
+          newConfirmed = item.NewConfirmed,
+          newDeaths = item.NewDeaths,
+          newRecovered = item.NewRecovered
+        )
+      });
+      this.setState({
+        TotalConfirmed: totalConfirmed,
+        NewlyConfirmed: newConfirmed,
+        TotalDeath: totalDeath,
+        NewlyDeath: newDeaths,
+        TotalRecovered: totalRecovered,
+        NewRecovered: newRecovered,
+        CountryName: countryName
+      });
+      console.log(totalRecovered, totalConfirmed, totalDeath, newConfirmed, newDeaths, newRecovered, countryName, tempFilteredArray);
+      this.generateGraphOnSelectedCountry();
+
+      if (this.state.selectedCountry === "Select a Country") {
+        this.getSummary();
+      }
+    }).catch(errorOnGetCountryOnchange => { console.log(errorOnGetCountryOnchange); });
   }
-  getCountry =()=> {
+  getCountry = () => {
     let tempArray = [];
     fetch(url + '/countries').then(d => {
       return d.json();
@@ -72,7 +162,7 @@ class App extends React.Component {
       console.log(errorOnFetch);
     });
   }
-  getSummary=() =>{
+  getSummary = () => {
     let totalCon = 0;
     let newCon = 0;
     let totalDeth = 0;
@@ -104,7 +194,7 @@ class App extends React.Component {
     });
   }
   render() {
-    let me=this;
+    let me = this;
     const { Countries } = this.state;
     let countryList = Countries.length > 0 && Countries.map((item, i) => {
       return (
@@ -114,6 +204,7 @@ class App extends React.Component {
     return (
       <div>
         <h1 className="title">All Country Covid-19 Tracker</h1>
+        <div className="subTitle">Last updated: {this.state.updatedTime}</div>
         <div className="container">
           <div className="div1">
             <div className="total-confirmed-div">Total Confirmed  <br /> <br /> <span className="data-confirmed"> {this.state.TotalConfirmed} </span> </div>
@@ -130,9 +221,17 @@ class App extends React.Component {
           <div className="drop-down-box-div">
             <br />
             <br />
-            <select id="country" onChange={(e)=>me.getCountryOnChangeOfDropdown(e)}>
+            <select id="country" onChange={(e) => me.getCountryOnChangeOfDropdown(e)}>
               {countryList}
             </select>
+          </div>
+          <br />
+          <div 
+           className="line-chart-totalConfirmed">
+            <canvas 
+              id="myChart"
+              ref={this.chartRef}
+            />
           </div>
         </div>
       </div>

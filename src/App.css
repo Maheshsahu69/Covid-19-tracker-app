@@ -1,13 +1,33 @@
+canvas{
+  width:600px ;
+  /* !important; */
+  height:250px ;
+  /* !important; */
+} 
+.line-chart-totalConfirmed {
+    height: 400px !important;
+    
+    }
+
 .title{
   font-family:archia;
-  color: #343a40;
+  color: #31475e;
   text-align: center;
   font-size:25px;
+}
+.subTitle{
+  font-size:13px; 
+  color:#999; 
+  text-align:center;
+  font: size 15px;
+  font-weight:600;
+  margin-top: 0px;
 }
 .data-confirmed{
   color:rgb(255, 7, 58);
   font-size:20px;
   font-weight:600;
+  padding-left:20px;
 }
 .data-death{
   padding-left:20px;
@@ -74,7 +94,7 @@
   background-color: rgba(54, 144, 240, 0.295);
   border-radius: 10px;
   max-width: 100px;
-  padding: 30px;
+  padding: 32px;
   padding-top: 5px;
 }
 .newly-death-div{
@@ -87,7 +107,7 @@
   border-radius: 10px;
   max-width: 100px;
   margin-left : 10px;
-  padding: 30px;
+  padding: 32px;
   padding-top: 5px;
 }
 .total-recovered-div{
@@ -126,4 +146,10 @@ select {
 select:focus {
   min-width: 300px;
   width: auto;
+}
+
+.line-chart-totalConfirmed{
+  max-width: 100;
+  height: 100;
+  text-align: center;
 }
