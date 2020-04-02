@@ -5,6 +5,8 @@ import Chart from "chart.js";
 const url = "https://api.covid19api.com";
 class App extends React.Component {
   chartRef = React.createRef();
+  totalDeathChartRef=React.createRef();
+  totalRecoveredChartRef=React.createRef();
   constructor(props) {
     super(props);
     this.state = {
@@ -48,16 +50,18 @@ class App extends React.Component {
       let comma= space.replace(/ /g,"-");
       let trimmedCountry= comma.replace(/,/g,'');
       let url = `https://api.covid19api.com/dayone/country/${trimmedCountry}/status/confirmed/live`;
+      let urlRecovered=`https://api.covid19api.com/dayone/country/${trimmedCountry}/status/recovered/live`;
       fetch(url).then((response) => {
         return response.json();
       }).then((dataGraph) => {
-            this.getGraph(dataGraph);   
-        
+            this.getGraphTotalConfirmed(dataGraph);
+           this.getGraphTotalDeath();
+            this.getGraphTotalRecovered();
       }).catch((errorLiveDataCountryWise) => { console.log("errorLiveDataCountryWise", errorLiveDataCountryWise); });
      }
 
   }
-  getGraph=(dataGraph)=>{
+  getGraphTotalConfirmed=(dataGraph)=>{
     let tempArrayDate = [];
     tempArrayDate = dataGraph.map((item) => {
       let a = item.Date
@@ -66,7 +70,7 @@ class App extends React.Component {
       let dateFormated = d[1] + "-" + d[2]; //+ ":" + d[0];
       return dateFormated;
     });
-        //graph code
+        //graph code for Total Confirmed Cases country-wise
         const myChartRef = this.chartRef.current.getContext("2d");
         Chart.defaults.global.defaultFontFamily = ' "Lucida Grande", "Lucida Sans Unicode", "Arial", "Helvetica", "sans-serif" ';
         Chart.defaults.global.defaultFontSize = 10;
@@ -81,9 +85,17 @@ class App extends React.Component {
                 label: "Total Cases",
                 data: dataGraph.map((item) => { return item.Cases }),
                 fill: false,
-                backgroundColor: '#40E0D0',
-                borderColor: '#40E0D0',
+                backgroundColor: 'rgb(255, 7, 58)',
+                borderColor: 'rgb(255, 7, 58)',
+                borderWidth: 3,
+                hoverBackgroundColor:"rgb(255, 7, 58)",
+                //borderDashOffset:450
+                pointHoverBorderWidth	:5,
+                pointHoverBorderColor:"rgb(255, 7, 58)",
+                pointHoverRadius:4
+
               },
+              
             ]
           },
           options: {
@@ -99,11 +111,155 @@ class App extends React.Component {
                   ticks: {
                     beginAtZero:true
                   }
+              }],
+              xAxes: [{
+                gridLines:{
+                    display:false
+                  }
               }]
             }
           }
         });
   }
+getGraphTotalDeath = ()=>{
+  let space=this.state.selectedCountry;
+  let comma= space.replace(/ /g,"-");
+  let trimmedCountry= comma.replace(/,/g,'');
+  let urlDeath=`https://api.covid19api.com/dayone/country/${trimmedCountry}/status/deaths/live`;
+  fetch(urlDeath).then((response) => {
+    return response.json();
+  }).then((dataGraph) => {
+    let tempArrayDate = [];
+    tempArrayDate = dataGraph.map((item) => {
+      let a = item.Date
+      let b = a.split('T');
+      let d = b[0].split('-');
+      let dateFormated = d[1] + "-" + d[2]; //+ ":" + d[0];
+      return dateFormated;
+    });
+        //graph code for Total Death Cases country-wise
+        const DeathChartRef = this.totalDeathChartRef.current.getContext("2d");
+        Chart.defaults.global.defaultFontFamily = ' "Lucida Grande", "Lucida Sans Unicode", "Arial", "Helvetica", "sans-serif" ';
+        Chart.defaults.global.defaultFontSize = 10;
+        Chart.defaults.global.defaultFontColor = '#777';
+        new Chart(DeathChartRef, {
+          type: "line",
+          data: {
+            //Bring in data
+            labels: tempArrayDate.map((item) => { return item }),
+            datasets: [
+              {
+                label: "Total Cases",
+                data: dataGraph.map((item) => { return item.Cases }),
+                fill: false,
+                backgroundColor: 'rgba(0,123,255,.6)',
+                borderColor: 'rgba(0,123,255,.6)',
+                borderWidth: 3,
+                hoverBackgroundColor:"rgba(0,123,255,.6)",
+                //borderDashOffset:450
+                pointHoverBorderWidth	:5,
+                pointHoverBorderColor:"rgba(0,123,255,.6)",
+                pointHoverRadius:4
+
+              },
+              
+            ]
+          },
+          options: {
+            //Customize chart options
+            responsive: true, 
+            title: {
+              display: true,
+              text: "Total Death Cases in : " + (this.state.CountryName === '' ? 'All Country' : this.state.CountryName)
+            },
+            maintainAspectRatio: false,
+             scales: {
+              yAxes: [{
+                  ticks: {
+                    beginAtZero:true
+                  }
+              }],
+              xAxes: [{
+                gridLines:{
+                    display:false
+                  }
+              }]
+            }
+          }
+        });
+  }).catch((errorLiveDataCountryWiseDeath) => { console.log("errorLiveDataCountryWiseDeath", errorLiveDataCountryWiseDeath); });
+  }
+getGraphTotalRecovered = ()=> {
+  let space=this.state.selectedCountry;
+  let comma= space.replace(/ /g,"-");
+  let trimmedCountry= comma.replace(/,/g,'');
+  let urlRecovered=`https://api.covid19api.com/dayone/country/${trimmedCountry}/status/recovered/live`;
+  fetch(urlRecovered).then((response) => {
+    return response.json();
+  }).then((dataGraphRecovered) => {
+
+    let tempArrayDate = [];
+    tempArrayDate = dataGraphRecovered.map((item) => {
+      let a = item.Date
+      let b = a.split('T');
+      let d = b[0].split('-');
+      let dateFormated = d[1] + "-" + d[2]; //+ ":" + d[0];
+      return dateFormated;
+    });
+        //graph code for Total Death Cases country-wise
+        const RecoveredChartRef = this.totalRecoveredChartRef.current.getContext("2d");
+        Chart.defaults.global.defaultFontFamily = ' "Lucida Grande", "Lucida Sans Unicode", "Arial", "Helvetica", "sans-serif" ';
+        Chart.defaults.global.defaultFontSize = 10;
+        Chart.defaults.global.defaultFontColor = '#777';
+        new Chart(RecoveredChartRef, {
+          type: "line",
+          data: {
+            //Bring in data
+            labels: tempArrayDate.map((item) => { return item }),
+            datasets: [
+              {
+                label: "Total Cases",
+                data: dataGraphRecovered.map((item) => { return item.Cases }),
+                fill: false,
+                backgroundColor: 'rgba(40,167,69,.6)',
+                borderColor: 'rgba(40,167,69,.6)',
+                borderWidth: 3,
+                hoverBackgroundColor:"rgba(40,167,69,.6)",
+                //borderDashOffset:450
+                pointHoverBorderWidth	:5,
+                pointHoverBorderColor:"rgba(40,167,69,.6)",
+                pointHoverRadius:4
+  
+              },
+              
+            ]
+          },
+          options: {
+            //Customize chart options
+            responsive: true, 
+            title: {
+              display: true,
+              text: "Total Recovered Cases in : " + (this.state.CountryName === '' ? 'All Country' : this.state.CountryName)
+            },
+            maintainAspectRatio: false,
+             scales: {
+              yAxes: [{
+                  ticks: {
+                    beginAtZero:true
+                  }
+              }],
+              xAxes: [{
+                gridLines:{
+                    display:false
+                  }
+              }]
+            }
+          }
+        });
+  }).catch((errorLiveDataCountryWiseRecovered) => { console.log("errorLiveDataCountryWiseRecovered", errorLiveDataCountryWiseRecovered); });
+
+ 
+}
   getCountryOnChangeOfDropdown = (e) => {
     //setting selectedCountry value on select of drownbox
     this.setState({ selectedCountry: e.target.value });
@@ -117,6 +273,13 @@ class App extends React.Component {
     fetch(url + '/summary').then((d) => {
       return d.json();
     }).then(data => {
+      // show recoveredID, deathID, confirmedID
+      let idRec=document.getElementById('recoveredID');
+      idRec.style.display="block";
+      let idDea=document.getElementById('deathID');
+      idDea.style.display="block";
+      let idCon=document.getElementById('confirmedID');
+      idCon.style.display="block";
       let tempFilteredArray = [];
       tempFilteredArray = data.Countries.filter((item) => {
         return item.Country === this.state.selectedCountry;
@@ -218,6 +381,7 @@ class App extends React.Component {
             <div className="total-recovered-div">Total Recovered <br /> <br /> <span className="data-recovered"> {this.state.TotalRecovered} </span></div>
             <div className="newly-recovered-div"> Newly Recovered <br /> <br /> <span className="data-recovered"> {this.state.NewRecovered} </span></div>
           </div>
+          <div className="div4">
           <div className="drop-down-box-div">
             <br />
             <br />
@@ -225,14 +389,32 @@ class App extends React.Component {
               {countryList}
             </select>
           </div>
-          <br />
-          <div 
-           className="line-chart-totalConfirmed">
-            <canvas 
-              id="myChart"
-              ref={this.chartRef}
-            />
           </div>
+          <div className="div5">
+            <br />
+             <div className="line-chart-totalConfirmed" id="confirmedID" hidden>
+               <canvas 
+                  id="myChart"
+                  ref={this.chartRef}
+                />
+              </div>
+           </div>
+           <div className="div6">
+                <div className="line-chart-totalDeath" id="deathID" hidden>
+                  <canvas
+                    id="totalDeathChart"
+                    ref={this.totalDeathChartRef}
+                  />
+                </div>
+           </div>
+           <div className="div7">
+                <div className="line-chart-totalRecovered" id="recoveredID" hidden>
+                  <canvas
+                    id="totalRecoveredChart"
+                    ref={this.totalRecoveredChartRef}
+                  />
+                </div>
+           </div>
         </div>
       </div>
     );
